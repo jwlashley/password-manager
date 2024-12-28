@@ -71,13 +71,15 @@ fn generate_password(length: i32, want_upper: bool, want_number: bool, want_symb
 #[derive(Debug)] // Allows us to print the struct
 // Account type
 struct Account{
+    service_name: String,
     username: String,
     password: String,
 }
 
 impl Account{
-    fn new(user: String, pass: String) -> Self {
+    fn new(service: String, user: String, pass: String) -> Self {
         Self {
+            service_name: service,
             username: user,
             password: pass,
         }
@@ -86,7 +88,16 @@ impl Account{
 
 // Main function - entry point of the program
 fn main() {
-    
+    let mut service: String = String::new();
+    print!("Enter the Service this account is for: ");
+    io::stdout().flush().expect("Failed to flush stdout");
+    io::stdin()
+        .read_line(&mut service)
+        .expect("Failed to read input.");
+    service = service.trim().to_string();
+
+
+
     let mut username = String::new();
     print!("Enter your username: ");
     io::stdout().flush().expect("Failed to flush stdout");
@@ -111,9 +122,10 @@ fn main() {
     let password_options = generate_password(password_length, use_uppercase, use_numbers, use_symbols);
     
     //Create account object
-    let account = Account::new(username, password_options);
+    let account = Account::new(service ,username, password_options);
 
     // Display the generated password
+    println!("Service name: {}", account.service_name);
     println!("Username: {}", account.username);
     println!("Password: {}", account.password);
 
