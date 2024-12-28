@@ -105,15 +105,6 @@ cargo run
 - [ ] Proper error handling
 - [ ] Unit tests for each module
 
-## Contributing
-
-Contributions are welcome! The modular architecture makes it easy to work on individual components. Please feel free to:
-
-- Report bugs
-- Suggest features
-- Submit pull requests
-- Improve documentation
-
 ## Acknowledgments
 
 - Rust Cryptography Working Group for the `aes-gcm` crate
