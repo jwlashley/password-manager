@@ -65,7 +65,7 @@ cargo run
 
 ## Future Enhancements
 
-- [ ] Database integration for persistent storage
+- [x] Database integration for persistent storage
 - [ ] Master password implementation
 - [ ] GUI interface
 - [ ] Password strength checking
