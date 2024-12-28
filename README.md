@@ -25,8 +25,8 @@ A secure, command-line password manager built in Rust that allows users to gener
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/rust-password-manager.git
-cd rust-password-manager
+git clone https://github.com/jwlashley/password-manager.git
+cd password-manager
 ```
 
 2. Build the project:
@@ -73,13 +73,6 @@ cargo run
 - [ ] Secure password sharing
 - [ ] Multi-device sync support
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit pull requests.
-
-## License
-
-[Add your chosen license here]
 
 ## Acknowledgments
 
