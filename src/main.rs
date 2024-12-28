@@ -2,6 +2,14 @@
 use std::io::{self, Write};  // For handling input/output operations
 use rand::seq::SliceRandom;  // Provides tools for randomly selecting items from collections
 use rand::thread_rng;        // Provides a random number generator
+use aes_gcm::{
+    aead::{Aead, AeadCore, KeyInit, OsRng},
+    Aes256Gcm, Nonce, Key // Or `Aes128Gcm`
+};
+use aes_gcm::aead::generic_array::GenericArray;
+
+
+const KEY_BYTES: [u8; 32] = [42; 32];
 
 // Function that prompts user for yes/no input and returns a boolean
 // Takes a string slice as the prompt message
@@ -69,25 +77,54 @@ fn generate_password(length: i32, want_upper: bool, want_number: bool, want_symb
 }
 
 #[derive(Debug)] // Allows us to print the struct
-// Account type
 struct Account{
     service_name: String,
     username: String,
-    password: String,
+    encrypted_password: Vec<u8>,
+    nonce: Vec<u8>,
 }
 
 impl Account{
     fn new(service: String, user: String, pass: String) -> Self {
+        let key = Key::<Aes256Gcm>::from_slice(&KEY_BYTES);
+
+        let cipher = Aes256Gcm::new(key);
+
+        let nonce = Aes256Gcm::generate_nonce(&mut OsRng); //Generate a unique Nonce
+
+        // Encrypt the Password
+        let encrypted_password = cipher
+            .encrypt(&nonce, pass.as_bytes())
+            .expect("encryption failure!");
+
         Self {
             service_name: service,
             username: user,
-            password: pass,
+            encrypted_password,
+            nonce: nonce.to_vec(),
         }
+    }
+
+    // Retrieve the password...
+    fn get_password(&self) -> String {
+        let key = Key::<Aes256Gcm>::from_slice(&KEY_BYTES);
+        let cipher = Aes256Gcm::new(key);
+
+        let nonce = Nonce::from_slice(&self.nonce);
+
+        let decrypted_bytes = cipher
+            .decrypt(nonce, self.encrypted_password.as_ref())
+            .expect("decryption failure!");
+
+        String::from_utf8(decrypted_bytes)
+            .expect("Invalid UTF-8")
     }
 }
 
 // Main function - entry point of the program
 fn main() {
+
+
     let mut service: String = String::new();
     print!("Enter the Service this account is for: ");
     io::stdout().flush().expect("Failed to flush stdout");
@@ -127,6 +164,6 @@ fn main() {
     // Display the generated password
     println!("Service name: {}", account.service_name);
     println!("Username: {}", account.username);
-    println!("Password: {}", account.password);
+    println!("Password: {}", account.get_password());
 
 }
